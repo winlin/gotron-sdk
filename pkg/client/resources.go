@@ -105,7 +105,7 @@ func (g *GrpcClient) GetCanDelegatedMaxSize(address string, resource int32) (*ap
 }
 
 // DelegateResource from BASE58 address
-func (g *GrpcClient) DelegateResource(from, to string, resource core.ResourceCode, delegateBalance int64, lock bool, lockPeriod int64) (*api.TransactionExtention, error) {
+func (g *GrpcClient) DelegateResource(from, to string, resource core.ResourceCode, delegateBalance int64, lock bool, lockPeriod int64, permissionId int32) (*api.TransactionExtention, error) {
 	addrFromBytes, err := common.DecodeCheck(from)
 	if err != nil {
 		return nil, err
@@ -134,11 +134,17 @@ func (g *GrpcClient) DelegateResource(from, to string, resource core.ResourceCod
 
 	}
 
+	if permissionId != 0 && response.Transaction != nil {
+		for _, contract := range response.Transaction.RawData.Contract {
+			contract.PermissionId = permissionId
+		}
+	}
+
 	return response, nil
 }
 
 // UnDelegateResource from BASE58 address
-func (g *GrpcClient) UnDelegateResource(owner, receiver string, resource core.ResourceCode, delegateBalance int64, lock bool) (*api.TransactionExtention, error) {
+func (g *GrpcClient) UnDelegateResource(owner, receiver string, resource core.ResourceCode, delegateBalance int64, lock bool, permissionId int32) (*api.TransactionExtention, error) {
 	addrOwnerBytes, err := common.DecodeCheck(owner)
 	if err != nil {
 		return nil, err
@@ -163,6 +169,12 @@ func (g *GrpcClient) UnDelegateResource(owner, receiver string, resource core.Re
 	if err != nil {
 		return nil, err
 
+	}
+
+	if permissionId != 0 && response.Transaction != nil {
+		for _, contract := range response.Transaction.RawData.Contract {
+			contract.PermissionId = permissionId
+		}
 	}
 
 	return response, nil

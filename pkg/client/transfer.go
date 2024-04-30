@@ -10,7 +10,7 @@ import (
 )
 
 // Transfer from to base58 address
-func (g *GrpcClient) Transfer(from, toAddress string, amount int64) (*api.TransactionExtention, error) {
+func (g *GrpcClient) Transfer(from, toAddress string, amount int64, permissionId int32) (*api.TransactionExtention, error) {
 	var err error
 
 	contract := &core.TransferContract{}
@@ -28,6 +28,11 @@ func (g *GrpcClient) Transfer(from, toAddress string, amount int64) (*api.Transa
 	tx, err := g.Client.CreateTransaction2(ctx, contract)
 	if err != nil {
 		return nil, err
+	}
+	if permissionId != 0 && tx.Transaction != nil {
+		for _, contract := range tx.Transaction.RawData.Contract {
+			contract.PermissionId = permissionId
+		}
 	}
 	if proto.Size(tx) == 0 {
 		return nil, fmt.Errorf("bad transaction")

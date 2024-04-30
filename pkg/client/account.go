@@ -301,6 +301,13 @@ func (g *GrpcClient) GetAccountDetailed(addr string) (*account.Account, error) {
 		UnfreezeLeft:            accUnfreezeLeft.GetCount(),
 		MaxCanDelegateBandwidth: maxCanDelegateBandwidth.GetMaxSize(),
 		MaxCanDelegateEnergy:    maxCanDelegateEnergy.GetMaxSize(),
+		TotalEnergyWeight:       accR.TotalEnergyWeight,
+		TotalEnergyLimit:        accR.TotalEnergyLimit,
+		TotalNetWeight:          accR.TotalNetWeight,
+		TotalNetLimit:           accR.TotalNetLimit,
+		OwnerPermission:         acc.GetOwnerPermission(),
+		WitnessPermission:       acc.GetWitnessPermission(),
+		ActivePermission:        acc.GetActivePermission(),
 	}
 
 	return accDet, nil

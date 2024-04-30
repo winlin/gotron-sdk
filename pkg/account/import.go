@@ -9,8 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
-
 	"github.com/btcsuite/btcd/btcec/v2"
 	mapset "github.com/deckarep/golang-set"
 	"github.com/fbsobreira/gotron-sdk/pkg/common"
@@ -122,7 +120,7 @@ func ImportKeyStore(keyPath, name, passphrase string) (string, error) {
 	if hasAddress {
 		return "", fmt.Errorf("address %s already exists in keystore", key.Address.String())
 	}
-	uDir, _ := homedir.Dir()
+	uDir := common.GetCurrentDir()
 	newPath := filepath.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName, name, filepath.Base(keyPath))
 	err = writeToFile(newPath, string(keyJSON))
 	if err != nil {

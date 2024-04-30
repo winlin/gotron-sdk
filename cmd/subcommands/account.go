@@ -127,7 +127,7 @@ func accountSub() []*cobra.Command {
 				return err
 			}
 			valueInt := int64(value * math.Pow10(6))
-			tx, err := conn.Transfer(signerAddress.String(), addr.String(), valueInt)
+			tx, err := conn.Transfer(signerAddress.String(), addr.String(), valueInt, 0)
 			if err != nil {
 				return err
 			}

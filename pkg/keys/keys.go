@@ -7,15 +7,13 @@ import (
 	"strings"
 
 	"github.com/fbsobreira/gotron-sdk/pkg/address"
+	"github.com/fbsobreira/gotron-sdk/pkg/common"
 	"github.com/fbsobreira/gotron-sdk/pkg/keystore"
-
 	// "github.com/ethereum/go-ethereum/crypto"
-
-	homedir "github.com/mitchellh/go-homedir"
 )
 
 func checkAndMakeKeyDirIfNeeded() string {
-	userDir, _ := homedir.Dir()
+	userDir := common.GetCurrentDir()
 	tronCTLDir := path.Join(userDir, ".tronctl", "keystore")
 	if _, err := os.Stat(tronCTLDir); os.IsNotExist(err) {
 		// Double check with Leo what is right file persmission
