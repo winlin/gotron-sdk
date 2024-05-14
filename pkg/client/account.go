@@ -71,7 +71,7 @@ func (g *GrpcClient) GetAccountNet(addr string) (*api.AccountNetMessage, error) 
 }
 
 // CreateAccount activate tron account
-func (g *GrpcClient) CreateAccount(from, addr string) (*api.TransactionExtention, error) {
+func (g *GrpcClient) CreateAccount(from, addr string, permissionId int32) (*api.TransactionExtention, error) {
 	var err error
 
 	contract := &core.AccountCreateContract{}
@@ -87,6 +87,11 @@ func (g *GrpcClient) CreateAccount(from, addr string) (*api.TransactionExtention
 	tx, err := g.Client.CreateAccount2(ctx, contract)
 	if err != nil {
 		return nil, err
+	}
+	if permissionId != 0 && tx.Transaction != nil {
+		for _, contract := range tx.Transaction.RawData.Contract {
+			contract.PermissionId = permissionId
+		}
 	}
 	if proto.Size(tx) == 0 {
 		return nil, fmt.Errorf("bad transaction")
