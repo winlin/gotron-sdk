@@ -320,26 +320,31 @@ func (g *GrpcClient) GetAccountDetailed(addr string) (*account.Account, error) {
 }
 
 func (g *GrpcClient) GetSlimAccountDetailed(addr string) (*account.Account, error) {
+	fmt.Println(" GetAccount ============= addr:", addr)
 	acc, err := g.GetAccount(addr)
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println(" GetAccountResource ============= addr:", addr)
 	accR, err := g.GetAccountResource(addr)
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println(" GetCanDelegatedMaxSize ============= addr:", addr)
 	maxCanDelegateBandwidth, err := g.GetCanDelegatedMaxSize(addr, int32(core.ResourceCode_BANDWIDTH))
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println(" GetCanDelegatedMaxSize ============= addr:", addr)
 	maxCanDelegateEnergy, err := g.GetCanDelegatedMaxSize(addr, int32(core.ResourceCode_ENERGY))
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println(" GetSlimAccount Data ============= addr:", addr)
 	accDet := &account.Account{
 		Address:                 address.Address(acc.GetAddress()).String(),
 		Type:                    acc.Type.String(),
@@ -365,6 +370,8 @@ func (g *GrpcClient) GetSlimAccountDetailed(addr string) (*account.Account, erro
 		WitnessPermission:       acc.GetWitnessPermission(),
 		ActivePermission:        acc.GetActivePermission(),
 	}
+
+	fmt.Println(" GetSlimAccount Done ============= addr:", addr)
 
 	return accDet, nil
 }
