@@ -19,6 +19,7 @@ func (g *GrpcClient) GetAccount(addr string) (*core.Account, error) {
 	account := new(core.Account)
 	var err error
 
+	fmt.Println(" GetAccount ============= addr:", addr)
 	account.Address, err = common.DecodeCheck(addr)
 	if err != nil {
 		return nil, err
