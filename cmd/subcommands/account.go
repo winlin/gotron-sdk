@@ -71,7 +71,7 @@ func accountSub() []*cobra.Command {
 			if signerAddress.String() == "" {
 				return fmt.Errorf("no signer specified")
 			}
-			tx, err := conn.CreateAccount(signerAddress.String(), addr.String())
+			tx, err := conn.CreateAccount(signerAddress.String(), addr.String(), 0)
 			if err != nil {
 				return err
 			}

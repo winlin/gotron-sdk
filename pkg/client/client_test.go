@@ -14,7 +14,7 @@ import (
 )
 
 func TestTRC20(t *testing.T) {
-	c := client.NewGrpcClient("")
+	c := client.NewGrpcClient("", 3)
 	err := c.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 
@@ -34,7 +34,7 @@ func TestSend(t *testing.T) {
 
 	privateKeyBytes, _ := hex.DecodeString("ABCD")
 
-	c := client.NewGrpcClient("")
+	c := client.NewGrpcClient("", 3)
 	err := c.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 	tx, err := c.Transfer(fromAddress, toAddress, 1000, 0)

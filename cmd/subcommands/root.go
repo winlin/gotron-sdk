@@ -58,7 +58,7 @@ var (
 			case 1:
 				node = node + ":50051"
 			}
-			conn = client.NewGrpcClient(node)
+			conn = client.NewGrpcClient(node, 3)
 
 			// load grpc options
 			opts := make([]grpc.DialOption, 0)

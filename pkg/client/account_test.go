@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 	opts := make([]grpc.DialOption, 0)
 	opts = append(opts, grpc.WithInsecure())
 
-	conn = client.NewGrpcClient(tronAddress)
+	conn = client.NewGrpcClient(tronAddress, 3)
 
 	if err := conn.Start(opts...); err != nil {
 		_ = fmt.Errorf("Error connecting GRPC Client: %v", err)

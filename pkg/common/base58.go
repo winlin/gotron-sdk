@@ -3,7 +3,6 @@ package common
 import (
 	"crypto/sha256"
 	"fmt"
-	"runtime/debug"
 
 	"github.com/shengdoushi/base58"
 )
@@ -40,11 +39,7 @@ func DecodeCheck(input string) ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println("DecodeCheck ============ decodeCheck: ", decodeCheck)
-	fmt.Println()
 	if len(decodeCheck) < 4 {
-		fmt.Println("DecodeCheck ============ decodeCheck 长度低于 4")
-		debug.PrintStack()
 		return nil, fmt.Errorf("b58 check error")
 	}
 
@@ -68,10 +63,6 @@ func DecodeCheck(input string) ([]byte, error) {
 	h256h1.Write(h0)
 	h1 := h256h1.Sum(nil)
 
-	fmt.Println("DecodeCheck ============ h1[0] check: ", h1[0] == decodeCheck[len(decodeData)])
-	fmt.Println("DecodeCheck ============ h1[1] check: ", h1[1] == decodeCheck[len(decodeData)+1])
-	fmt.Println("DecodeCheck ============ h1[2] check: ", h1[2] == decodeCheck[len(decodeData)+2])
-	fmt.Println("DecodeCheck ============ h1[3] check: ", h1[2] == decodeCheck[len(decodeData)+3])
 	if h1[0] == decodeCheck[len(decodeData)] &&
 		h1[1] == decodeCheck[len(decodeData)+1] &&
 		h1[2] == decodeCheck[len(decodeData)+2] &&
@@ -79,7 +70,5 @@ func DecodeCheck(input string) ([]byte, error) {
 
 		return decodeData, nil
 	}
-
-	debug.PrintStack()
 	return nil, fmt.Errorf("b58 check error")
 }
