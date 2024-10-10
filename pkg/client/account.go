@@ -71,7 +71,7 @@ func (g *GrpcClient) GetAccountNet(addr string) (*api.AccountNetMessage, error) 
 }
 
 // CreateAccount activate tron account
-func (g *GrpcClient) CreateAccount(from, addr string) (*api.TransactionExtention, error) {
+func (g *GrpcClient) CreateAccount(from, addr string, permissionId int32) (*api.TransactionExtention, error) {
 	var err error
 
 	contract := &core.AccountCreateContract{}
@@ -87,6 +87,11 @@ func (g *GrpcClient) CreateAccount(from, addr string) (*api.TransactionExtention
 	tx, err := g.Client.CreateAccount2(ctx, contract)
 	if err != nil {
 		return nil, err
+	}
+	if permissionId != 0 && tx.Transaction != nil {
+		for _, contract := range tx.Transaction.RawData.Contract {
+			contract.PermissionId = permissionId
+		}
 	}
 	if proto.Size(tx) == 0 {
 		return nil, fmt.Errorf("bad transaction")
@@ -301,6 +306,63 @@ func (g *GrpcClient) GetAccountDetailed(addr string) (*account.Account, error) {
 		UnfreezeLeft:            accUnfreezeLeft.GetCount(),
 		MaxCanDelegateBandwidth: maxCanDelegateBandwidth.GetMaxSize(),
 		MaxCanDelegateEnergy:    maxCanDelegateEnergy.GetMaxSize(),
+		TotalEnergyWeight:       accR.TotalEnergyWeight,
+		TotalEnergyLimit:        accR.TotalEnergyLimit,
+		TotalNetWeight:          accR.TotalNetWeight,
+		TotalNetLimit:           accR.TotalNetLimit,
+		OwnerPermission:         acc.GetOwnerPermission(),
+		WitnessPermission:       acc.GetWitnessPermission(),
+		ActivePermission:        acc.GetActivePermission(),
+	}
+
+	return accDet, nil
+}
+
+func (g *GrpcClient) GetSlimAccountDetailed(addr string) (*account.Account, error) {
+	acc, err := g.GetAccount(addr)
+	if err != nil {
+		return nil, err
+	}
+
+	accR, err := g.GetAccountResource(addr)
+	if err != nil {
+		return nil, err
+	}
+
+	maxCanDelegateBandwidth, err := g.GetCanDelegatedMaxSize(addr, int32(core.ResourceCode_BANDWIDTH))
+	if err != nil {
+		return nil, err
+	}
+
+	maxCanDelegateEnergy, err := g.GetCanDelegatedMaxSize(addr, int32(core.ResourceCode_ENERGY))
+	if err != nil {
+		return nil, err
+	}
+
+	accDet := &account.Account{
+		Address:                 address.Address(acc.GetAddress()).String(),
+		Type:                    acc.Type.String(),
+		Name:                    string(acc.GetAccountName()),
+		ID:                      string(acc.GetAccountId()),
+		Balance:                 acc.GetBalance(),
+		Allowance:               acc.GetAllowance(),
+		LastWithdraw:            acc.LatestWithdrawTime,
+		IsWitness:               acc.IsWitness,
+		IsElected:               acc.IsCommittee,
+		Assets:                  acc.GetAssetV2(),
+		BWTotal:                 accR.GetFreeNetLimit() + accR.GetNetLimit(),
+		BWUsed:                  accR.GetFreeNetUsed() + accR.GetNetUsed(),
+		EnergyTotal:             accR.GetEnergyLimit(),
+		EnergyUsed:              accR.GetEnergyUsed(),
+		MaxCanDelegateBandwidth: maxCanDelegateBandwidth.GetMaxSize(),
+		MaxCanDelegateEnergy:    maxCanDelegateEnergy.GetMaxSize(),
+		TotalEnergyWeight:       accR.TotalEnergyWeight,
+		TotalEnergyLimit:        accR.TotalEnergyLimit,
+		TotalNetWeight:          accR.TotalNetWeight,
+		TotalNetLimit:           accR.TotalNetLimit,
+		OwnerPermission:         acc.GetOwnerPermission(),
+		WitnessPermission:       acc.GetWitnessPermission(),
+		ActivePermission:        acc.GetActivePermission(),
 	}
 
 	return accDet, nil

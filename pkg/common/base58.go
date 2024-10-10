@@ -70,6 +70,5 @@ func DecodeCheck(input string) ([]byte, error) {
 
 		return decodeData, nil
 	}
-
 	return nil, fmt.Errorf("b58 check error")
 }

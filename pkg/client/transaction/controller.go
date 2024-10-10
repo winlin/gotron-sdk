@@ -178,6 +178,14 @@ func (C *Controller) ExecuteTransaction() error {
 	return C.executionError
 }
 
+func (C *Controller) SignTransaction() (*core.Transaction, error) {
+	signedTransaction, err := C.sender.ks.SignTx(*C.sender.account, C.tx)
+	if err != nil {
+		return nil, err
+	}
+	return signedTransaction, nil
+}
+
 // GetRawData Byes from Transaction
 func (C *Controller) GetRawData() ([]byte, error) {
 	return proto.Marshal(C.tx.GetRawData())

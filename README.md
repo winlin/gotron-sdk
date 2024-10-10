@@ -80,3 +80,9 @@ To set trongrid API Key first create you api key at `www.trongrid.io` and use pa
 Trongrid API Key can also be set persistent in config file: `apiKey: 25f66928-0b70-48cd-9ac6-da6f8247c663` (replace with your API key)
 
 OS environment variable `TRONGRID_APIKEY` will overwrite any prior API key configuration if set.
+
+# 为原本proto增加参数 protoc 编译
+1. 在`proto/`里面找到需要增加参数的.proto文件
+2. 执行命令 `protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative core/contract/balance_contract.proto`，注意路径，有些proto可能存在依赖，并且编译后里面的某些方法会根据当前路径生成方法名，比如现在编译的`balance_contract.proto`文件，如果不在`proto/tron` 路径下编译，可能造成里面引用common.pb.go的方法名对不上
+3. 将生成的文件覆盖原xxx.pb.go文件
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative api/api.proto

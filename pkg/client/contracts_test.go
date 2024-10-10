@@ -32,7 +32,7 @@ func TestProtoParse(t *testing.T) {
 }
 
 func TestProtoParseR(t *testing.T) {
-	conn := client.NewGrpcClient("grpc.trongrid.io:50051")
+	conn := client.NewGrpcClient("grpc.trongrid.io:50051", 3)
 	err := conn.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 	block, err := conn.GetBlockByNum(48763870)
@@ -54,7 +54,7 @@ func TestProtoParseR(t *testing.T) {
 }
 
 func TestEstimateEnergy(t *testing.T) {
-	conn := client.NewGrpcClient("grpc.nile.trongrid.io:50051")
+	conn := client.NewGrpcClient("grpc.nile.trongrid.io:50051", 3)
 	err := conn.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 
@@ -71,7 +71,7 @@ func TestEstimateEnergy(t *testing.T) {
 }
 
 func TestGetAccount(t *testing.T) {
-	conn := client.NewGrpcClient("grpc.trongrid.io:50051")
+	conn := client.NewGrpcClient("grpc.trongrid.io:50051", 3)
 	err := conn.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 
@@ -98,7 +98,7 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestGetAccount2(t *testing.T) {
-	conn := client.NewGrpcClient("grpc.trongrid.io:50051")
+	conn := client.NewGrpcClient("grpc.trongrid.io:50051", 3)
 	err := conn.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 
@@ -108,7 +108,7 @@ func TestGetAccount2(t *testing.T) {
 }
 
 func TestGetAccountMigrationContract(t *testing.T) {
-	conn := client.NewGrpcClient("grpc.trongrid.io:50051")
+	conn := client.NewGrpcClient("grpc.trongrid.io:50051", 3)
 	err := conn.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 

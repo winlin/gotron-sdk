@@ -14,7 +14,7 @@ import (
 )
 
 func TestTRC20(t *testing.T) {
-	c := client.NewGrpcClient("")
+	c := client.NewGrpcClient("", 3)
 	err := c.Start(grpc.WithInsecure())
 	require.Nil(t, err)
 
@@ -34,10 +34,10 @@ func TestSend(t *testing.T) {
 
 	privateKeyBytes, _ := hex.DecodeString("ABCD")
 
-	c := client.NewGrpcClient("")
+	c := client.NewGrpcClient("", 3)
 	err := c.Start(grpc.WithInsecure())
 	require.Nil(t, err)
-	tx, err := c.Transfer(fromAddress, toAddress, 1000)
+	tx, err := c.Transfer(fromAddress, toAddress, 1000, 0)
 	require.Nil(t, err)
 
 	rawData, err := proto.Marshal(tx.Transaction.GetRawData())
@@ -48,7 +48,6 @@ func TestSend(t *testing.T) {
 
 	// btcec.PrivKeyFromBytes only returns a secret key and public key
 	sk, _ := btcec.PrivKeyFromBytes(privateKeyBytes)
-
 	signature, err := crypto.Sign(hash, sk.ToECDSA())
 	require.Nil(t, err)
 	tx.Transaction.Signature = append(tx.Transaction.Signature, signature)

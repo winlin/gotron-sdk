@@ -48,4 +48,11 @@ type Account struct {
 	UnfreezeLeft            int64              `json:"countUnfreezeLeft"`
 	MaxCanDelegateBandwidth int64              `json:"maxCanDelegateBandwidth"`
 	MaxCanDelegateEnergy    int64              `json:"maxCanDelegateEnergy"`
+	TotalEnergyWeight       int64              `json:"totalEnergyWeight"`
+	TotalEnergyLimit        int64              `json:"totalEnergyLimit"`
+	TotalNetWeight          int64              `json:"totalNetWeight"`
+	TotalNetLimit           int64              `json:"totalNetLimit"`
+	OwnerPermission         *core.Permission   `protobuf:"bytes,31,opt,name=owner_permission,json=ownerPermission,proto3" json:"owner_permission,omitempty"`
+	WitnessPermission       *core.Permission   `protobuf:"bytes,32,opt,name=witness_permission,json=witnessPermission,proto3" json:"witness_permission,omitempty"`
+	ActivePermission        []*core.Permission `protobuf:"bytes,33,rep,name=active_permission,json=activePermission,proto3" json:"active_permission,omitempty"`
 }

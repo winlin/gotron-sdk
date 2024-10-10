@@ -100,3 +100,33 @@ func (g *GrpcClient) GetBlockByLatestNum(num int64) (*api.BlockListExtention, er
 	maxSizeOption := grpc.MaxCallRecvMsgSize(32 * 10e6)
 	return g.Client.GetBlockByLatestNum2(ctx, numMessage, maxSizeOption)
 }
+
+func (g *GrpcClient) GetBandwidthPrices() (*api.PricesResponseMessage, error) {
+	emptyMessage := new(api.EmptyMessage)
+	maxSizeOption := grpc.MaxCallRecvMsgSize(32 * 10e6)
+	ctx, cancel := g.getContext()
+	defer cancel()
+
+	result, err := g.Client.GetBandwidthPrices(ctx, emptyMessage, maxSizeOption)
+
+	if err != nil {
+		return nil, fmt.Errorf("get bandwidth prices: %v", err)
+	}
+
+	return result, nil
+}
+
+func (g *GrpcClient) GetEnergyPrices() (*api.PricesResponseMessage, error) {
+	emptyMessage := new(api.EmptyMessage)
+	maxSizeOption := grpc.MaxCallRecvMsgSize(32 * 10e6)
+	ctx, cancel := g.getContext()
+	defer cancel()
+
+	result, err := g.Client.GetEnergyPrices(ctx, emptyMessage, maxSizeOption)
+
+	if err != nil {
+		return nil, fmt.Errorf("get energy prices: %v", err)
+	}
+
+	return result, nil
+}

@@ -62,6 +62,50 @@ func (g *GrpcClient) TRC20Call(from, contractAddress, data string, constant bool
 
 }
 
+// TRC20Call make cosntant calll with permission id
+func (g *GrpcClient) TRC20CallWithPermissionID(from, contractAddress, data string, constant bool, feeLimit int64, permissionId int32) (*api.TransactionExtention, error) {
+	var err error
+	fromDesc := address.HexToAddress("410000000000000000000000000000000000000000")
+	if len(from) > 0 {
+		fromDesc, err = address.Base58ToAddress(from)
+		if err != nil {
+			return nil, err
+		}
+	}
+	contractDesc, err := address.Base58ToAddress(contractAddress)
+	if err != nil {
+		return nil, err
+	}
+	dataBytes, err := common.FromHex(data)
+	if err != nil {
+		return nil, err
+	}
+	ct := &core.TriggerSmartContract{
+		OwnerAddress:    fromDesc.Bytes(),
+		ContractAddress: contractDesc.Bytes(),
+		Data:            dataBytes,
+	}
+	var result *api.TransactionExtention
+	if constant {
+		result, err = g.triggerConstantContract(ct)
+	} else {
+		result, err = g.triggerContract(ct, feeLimit)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if permissionId != 0 && result.Transaction != nil {
+		for _, contract := range result.Transaction.RawData.Contract {
+			contract.PermissionId = permissionId
+		}
+	}
+	if result.Result.Code > 0 {
+		return result, fmt.Errorf(string(result.Result.Message))
+	}
+	return result, nil
+
+}
+
 // TRC20GetName get token name
 func (g *GrpcClient) TRC20GetName(contractAddress string) (string, error) {
 	result, err := g.TRC20Call("", contractAddress, trc20NameSignature, true, 0)
@@ -176,6 +220,18 @@ func (g *GrpcClient) TRC20Send(from, to, contract string, amount *big.Int, feeLi
 	req := trc20TransferMethodSignature + "0000000000000000000000000000000000000000000000000000000000000000"[len(addrB.Hex())-4:] + addrB.Hex()[4:]
 	req += common.Bytes2Hex(ab)
 	return g.TRC20Call(from, contract, req, false, feeLimit)
+}
+
+// TRC20Send send token to address with permission id
+func (g *GrpcClient) TRC20SendPermissionID(from, to, contract string, amount *big.Int, feeLimit int64, permissionId int32) (*api.TransactionExtention, error) {
+	addrB, err := address.Base58ToAddress(to)
+	if err != nil {
+		return nil, err
+	}
+	ab := common.LeftPadBytes(amount.Bytes(), 32)
+	req := trc20TransferMethodSignature + "0000000000000000000000000000000000000000000000000000000000000000"[len(addrB.Hex())-4:] + addrB.Hex()[4:]
+	req += common.Bytes2Hex(ab)
+	return g.TRC20CallWithPermissionID(from, contract, req, false, feeLimit, permissionId)
 }
 
 // TRC20Approve approve token to address

@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 	opts := make([]grpc.DialOption, 0)
 	opts = append(opts, grpc.WithInsecure())
 
-	conn = client.NewGrpcClient(tronAddress)
+	conn = client.NewGrpcClient(tronAddress, 3)
 
 	if err := conn.Start(opts...); err != nil {
 		_ = fmt.Errorf("Error connecting GRPC Client: %v", err)
@@ -82,7 +82,7 @@ func TestUnfreezeV2(t *testing.T) {
 
 func TestDelegate(t *testing.T) {
 	t.Skip() // Only in testnet nile
-	tx, err := conn.DelegateResource(testnetNileAddressExample, testnetNileAddressDelegateExample, core.ResourceCode_BANDWIDTH, 1000000, false)
+	tx, err := conn.DelegateResource(testnetNileAddressExample, testnetNileAddressDelegateExample, core.ResourceCode_BANDWIDTH, 1000000, false, 0, 0)
 
 	require.Nil(t, err)
 	require.NotNil(t, tx.GetTxid())
@@ -90,7 +90,7 @@ func TestDelegate(t *testing.T) {
 
 func TestUndelegate(t *testing.T) {
 	t.Skip() // Only in testnet nile
-	tx, err := conn.UnDelegateResource(testnetNileAddressExample, testnetNileAddressDelegateExample, core.ResourceCode_BANDWIDTH, 1000000, false)
+	tx, err := conn.UnDelegateResource(testnetNileAddressExample, testnetNileAddressDelegateExample, core.ResourceCode_BANDWIDTH, 1000000, false, 0)
 
 	require.Nil(t, err)
 	require.NotNil(t, tx.GetTxid())
