@@ -511,8 +511,16 @@ func (ks *KeyStore) Update(a Account, passphrase, newPassphrase string) error {
 
 // zeroKey zeroes a private key in memory.
 func zeroKey(k *ecdsa.PrivateKey) {
-	b := k.D.Bits()
+}
+
+func (ks *KeyStore) ClearKey(addr string) error {
+	unlockedKey, found := ks.unlocked[addr]
+	if !found {
+		return ErrLocked
+	}
+	b := unlockedKey.PrivateKey.D.Bits()
 	for i := range b {
 		b[i] = 0
 	}
+	return nil
 }
